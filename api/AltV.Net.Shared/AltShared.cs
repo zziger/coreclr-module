@@ -4,6 +4,7 @@
 [assembly: InternalsVisibleTo("AltV.Net.Mock")]
 [assembly: InternalsVisibleTo("AltV.Net.Async")]
 [assembly: InternalsVisibleTo("AltV.Net.Client")]
+[assembly: InternalsVisibleTo("AltV.Net.Client.Async")]
 
 namespace AltV.Net.Shared
 {

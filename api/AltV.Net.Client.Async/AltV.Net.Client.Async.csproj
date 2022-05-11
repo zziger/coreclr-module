@@ -10,4 +10,8 @@
       <ProjectReference Include="..\AltV.Net.Client\AltV.Net.Client.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Elements" />
+    </ItemGroup>
+
 </Project>
