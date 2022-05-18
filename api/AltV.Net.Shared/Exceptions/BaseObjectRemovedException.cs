@@ -5,7 +5,7 @@ namespace AltV.Net.Elements.Entities
 {
     public class BaseObjectRemovedException : Exception
     {
-        internal BaseObjectRemovedException(ISharedBaseObject baseObject) : base(
+        public BaseObjectRemovedException(ISharedBaseObject baseObject) : base(
             $"BaseObject(Type: {baseObject.Type.ToString()}) got deleted.")
         {
         }

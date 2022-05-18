@@ -15,10 +15,6 @@ namespace AltV.Net.Client.Async.Elements.Entities
         public IntPtr BaseObjectNativePointer => BaseObject.BaseObjectNativePointer;
 
         public ICore Core => BaseObject.Core;
-        public void Remove()
-        {
-            throw new NotImplementedException();
-        }
         ISharedCore ISharedBaseObject.Core => BaseObject.Core;
 
         public bool Exists
@@ -43,114 +39,103 @@ namespace AltV.Net.Client.Async.Elements.Entities
             this.BaseObject = baseObject;
             this.AsyncContext = asyncContext;
         }
-
-        public void SetMetaData(string key, in MValueConst value)
-        {
-            lock (BaseObject)
-            {
-                if (!AsyncContext.CheckIfExists(BaseObject)) return;
-
-                var @const = value;
-                BaseObject.SetMetaData(key, @const);
-            }
-        }
-        
-        public void GetMetaData(string key, out MValueConst result)
-        {
-            lock (BaseObject)
-            {
-                if (!AsyncContext.CheckIfExists(BaseObject))
-                {
-                    result = default;
-                    return;
-                }
-
-                BaseObject.GetMetaData(key, out result);
-            }
-        }
-        
-        public bool HasMetaData(string key)
-        {
-            lock (BaseObject)
-            {
-                if (!AsyncContext.CheckIfExists(BaseObject)) return false;
-                return BaseObject.HasMetaData(key);
-            }
-        }
-        
-        public void DeleteMetaData(string key)
-        {
-            lock (BaseObject)
-            {
-                if (!AsyncContext.CheckIfExists(BaseObject)) return;
-                BaseObject.DeleteMetaData(key);
-            }
-        }
         
         public void SetMetaData(string key, object value)
         {
-            lock (BaseObject)
-            {
-                if (!AsyncContext.CheckIfExists(BaseObject)) return;
-                this.BaseObject.SetMetaData(key, value);
-            }
+            AsyncContext.Enqueue(() => BaseObject.SetMetaData(key, value));
         }
 
         public bool GetMetaData<T>(string key, out T result)
         {
-            AsyncContext.RunAll();
-            lock (BaseObject)
+            T res = default;
+            var success = false;
+            AsyncContext.RunOnMainThreadBlockingAndRunAll(() =>
             {
                 if (!AsyncContext.CheckIfExists(BaseObject))
                 {
-                    result = default;
-                    return false;
+                    success = false;
+                    return;
                 }
 
-                return BaseObject.GetMetaData(key, out result);
-            }
+                success = BaseObject.GetMetaData(key, out res);   
+            });
+            result = res;
+            return success;
         }
+
         public bool GetMetaData(string key, out int result)
         {
-            AsyncContext.RunAll();
-            lock (BaseObject)
+            CheckIfEntityExists();
+            GetMetaData(key, out MValueConst mValue);
+            using (mValue)
             {
-                if (!AsyncContext.CheckIfExists(BaseObject))
+                if (mValue.type != MValueConst.Type.Int)
                 {
                     result = default;
                     return false;
                 }
-
-                return BaseObject.GetMetaData(key, out result);
+                result = (int) mValue.GetInt();
             }
+
+            return true;
         }
+
         public bool GetMetaData(string key, out uint result)
         {
-            AsyncContext.RunAll();
-            lock (BaseObject)
+            CheckIfEntityExists();
+            GetMetaData(key, out MValueConst mValue);
+            using (mValue)
             {
-                if (!AsyncContext.CheckIfExists(BaseObject))
+                if (mValue.type != MValueConst.Type.Uint)
                 {
                     result = default;
                     return false;
                 }
-
-                return BaseObject.GetMetaData(key, out result);
+                result = (uint) mValue.GetUint();
             }
+
+            return true;
         }
+
         public bool GetMetaData(string key, out float result)
         {
-            AsyncContext.RunAll();
-            lock (BaseObject)
+            
+            CheckIfEntityExists();
+            GetMetaData(key, out MValueConst mValue);
+            using (mValue)
             {
-                if (!AsyncContext.CheckIfExists(BaseObject))
+                if (mValue.type != MValueConst.Type.Double)
                 {
                     result = default;
                     return false;
                 }
-
-                return BaseObject.GetMetaData(key, out result);
+                result = (float) mValue.GetDouble();
             }
+
+            return true;
+        }
+
+        public void SetMetaData(string key, in MValueConst value)
+        {
+            var @const = value;
+            AsyncContext.Enqueue(() => BaseObject.SetMetaData(key, in @const));
+        }
+
+        public void GetMetaData(string key, out MValueConst value)
+        {
+            MValueConst val = default;
+            AsyncContext.RunOnMainThreadBlockingAndRunAll(() =>
+            {
+                if (!AsyncContext.CheckIfExists(BaseObject))
+                {
+                    val = MValueConst.Nil;
+                    return;
+                }
+
+                BaseObject.GetMetaData(key, out val);
+            });
+            
+            value = val;
         }
 
         public void SetData(string key, object value)
@@ -181,6 +166,28 @@ namespace AltV.Net.Client.Async.Elements.Entities
         public void ClearData()
         {
             BaseObject.ClearData();
+        }
+
+        public bool HasMetaData(string key)
+        {
+            var res = false;
+            AsyncContext.RunOnMainThreadBlockingAndRunAll(() =>
+            {
+                if (!AsyncContext.CheckIfExists(BaseObject)) return;
+                res = BaseObject.HasMetaData(key);
+            });
+
+            return res;
+        }
+
+        public void DeleteMetaData(string key)
+        {
+            AsyncContext.Enqueue(() => BaseObject.DeleteMetaData(key));
+        }
+
+        public void Remove()
+        {
+            AsyncContext.Enqueue(() => BaseObject.Remove());
         }
 
         public void CheckIfEntityExists()
