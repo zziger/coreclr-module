@@ -4,7 +4,7 @@ namespace AltV.Net.Client.Async
 {
     public static partial class AltAsync
     {
-        // internal static AsyncCore Core;
+        internal static AsyncCore Core;
 
         internal static AltVAsync AltVAsync;
 
@@ -58,10 +58,10 @@ namespace AltV.Net.Client.Async
             AltVAsync = altVAsync;
         }
 
-        // internal static void Setup(AsyncCore core)
-        // {
-        //     Core = core;
-        // }
+        internal static void Setup(AsyncCore core)
+        {
+            Core = core;
+        }
 
         public static Task Do(Action action)
         {

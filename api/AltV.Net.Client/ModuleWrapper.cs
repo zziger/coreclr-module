@@ -84,7 +84,7 @@ namespace AltV.Net.Client
 
             var natives = _resource.GetNatives(DllName);
 
-            var client = new Core(
+            var client = _resource.GetCore(
                 library,
                 corePointer,
                 resourcePointer,
@@ -106,8 +106,8 @@ namespace AltV.Net.Client
                 natives
             );
 
-            _core = client;
-            Alt.CoreImpl = client;
+            _core = (Core) client;
+            Alt.CoreImpl = _core;
             AltShared.Core = client;
             Alt.Log("Core initialized");
 

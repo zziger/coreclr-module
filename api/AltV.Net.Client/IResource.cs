@@ -2,6 +2,7 @@ using AltV.Net.CApi;
 using AltV.Net.Client.Elements;
 using AltV.Net.Client.Elements.Factories;
 using AltV.Net.Client.Elements.Interfaces;
+using AltV.Net.Client.Elements.Pools;
 
 namespace AltV.Net.Client
 {
@@ -21,5 +22,24 @@ namespace AltV.Net.Client
         public IBaseObjectFactory<IWebView> GetWebViewFactory();
         public INativeResourceFactory GetResourceFactory();
         public ILogger GetLogger(ILibrary library, IntPtr corePointer);
+        ICore GetCore(ILibrary library,
+            IntPtr nativePointer,
+            IntPtr resourcePointer,
+            IPlayerPool playerPool,
+            IEntityPool<IVehicle> vehiclePool,
+            IBaseObjectPool<IBlip> blipPool,
+            IBaseObjectPool<ICheckpoint> checkpointPool,
+            IBaseObjectPool<IAudio> audioPool,
+            IBaseObjectPool<IHttpClient> httpClientPool,
+            IBaseObjectPool<IWebSocketClient> webSocketClientPool,
+            IBaseObjectPool<IWebView> webViewPool,
+            IBaseObjectPool<IRmlDocument> rmlDocumentPool,
+            IBaseObjectPool<IRmlElement> rmlElementPool,
+            IBaseBaseObjectPool baseBaseObjectPool,
+            IBaseEntityPool baseEntityPool,
+            INativeResourcePool nativeResourcePool,
+            ITimerPool timerPool,
+            ILogger logger,
+            INatives natives);
     }
 }
