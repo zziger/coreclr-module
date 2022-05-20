@@ -154,6 +154,18 @@ namespace AltV.Net.Client
             add => CoreImpl.NetOwnerChangeEventHandler.Add(value);
             remove => CoreImpl.NetOwnerChangeEventHandler.Remove(value);
         }
+        
+        public static event CustomEventDelegate OnCustomClientEvent
+        {
+            add => CoreImpl.CustomClientEventHandler.Add(value);
+            remove => CoreImpl.CustomClientEventHandler.Remove(value);
+        }
+        
+        public  static event CustomEventDelegate OnCustomServerEvent
+        {
+            add => CoreImpl.CustomServerEventHandler.Add(value);
+            remove => CoreImpl.CustomServerEventHandler.Remove(value);
+        }
 
         public static void OnServer(string eventName, Function function) => CoreImpl.AddServerEventListener(eventName, function);
         public static void OnServer<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>(string eventName, Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16> function) => CoreImpl.AddServerEventListener(eventName, Function.Create(Core, function));

@@ -10,13 +10,13 @@ namespace AltV.Net.Client.Example
         public override void OnStart()
         {
             Alt.LogInfo("Client Started!");
-            webView = Alt.CreateWebView("http://resource/client/html/index.html");
+            //webView = Alt.CreateWebView("http://resource/client/html/index.html");
             
-            webView.On("test2", () =>
-            {
-                Alt.LogInfo("[C#]test2 received");
-            });
-
+            // webView.On("test2", () =>
+            // {
+            //     Alt.LogInfo("[C#]test2 received");
+            // });
+            
             Alt.OnTick += () =>
             {
                 if (drawNametags) DrawNametags();
@@ -26,10 +26,10 @@ namespace AltV.Net.Client.Example
             {
                 switch (key)
                 {
-                    case ConsoleKey.X:
-                        drawNametags = !drawNametags;
-                        webView.Emit("test");
-                        break;
+                    // case ConsoleKey.X:
+                    //     drawNametags = !drawNametags;
+                    //     webView.Emit("test");
+                    //     break;
                     case ConsoleKey.M:
                         Alt.Log($"HasLocalMeta Test3: {Alt.HasLocalMetaData("test3").ToString()}");
                         Alt.Log($"HasLocalMeta Test: {Alt.HasLocalMetaData("test").ToString()}");
@@ -113,6 +113,16 @@ namespace AltV.Net.Client.Example
                 Alt.Log($"Window resolution changed from {old.X}x{old.Y} to {@new.X}x{@new.Y}");
             };
 
+            Alt.OnCustomClientEvent += (eventName, args) =>
+            {
+                Alt.Log($"Custom client event {eventName} triggered with args {args.Select(x => x.ToString()).Aggregate((x, y) => x + ", " + y)}");
+            };
+            
+            Alt.OnCustomServerEvent += (eventName, args) =>
+            {
+                Alt.Log($"Custom server event {eventName} triggered with args {args.Select(x => x.ToString()).Aggregate((x, y) => x + ", " + y)}");
+            };
+            
         }
 
         public override void OnStop()

@@ -1,5 +1,6 @@
 ﻿using System.Numerics;
 using AltV.Net.Client.Elements.Interfaces;
+using AltV.Net.Elements.Args;
 
 namespace AltV.Net.Client.Events
 {
@@ -35,6 +36,8 @@ namespace AltV.Net.Client.Events
     public delegate void WindowResolutionChangeDelegate(Vector2 oldResolution, Vector2 newResolution);
 
     public delegate void NetOwnerChangeDelegate(IEntity target, IPlayer? newOwner, IPlayer? oldOwner);
+
+    public delegate void CustomEventDelegate(string name, MValueConst[] args);
 
 
 }

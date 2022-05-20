@@ -90,9 +90,16 @@ namespace AltV.Net.Client
         internal readonly IEventHandler<NetOwnerChangeDelegate> NetOwnerChangeEventHandler =
             new HashSetEventHandler<NetOwnerChangeDelegate>();
 
+        internal readonly IEventHandler<CustomEventDelegate> CustomClientEventHandler =
+            new HashSetEventHandler<CustomEventDelegate>();
+        
+        internal readonly IEventHandler<CustomEventDelegate> CustomServerEventHandler =
+            new HashSetEventHandler<CustomEventDelegate>();
+
         public void OnServerEvent(string name, IntPtr[] args)
         {
             var mValues = MValueConst.CreateFrom(this, args);
+            CustomServerEventHandler.GetEvents().ForEachCatching(fn => fn(name, mValues), $"event {nameof(OnServerEvent)}");
 
             if (!ServerEventBus.ContainsKey(name)) return;
             foreach (var function in ServerEventBus[name])
@@ -104,7 +111,8 @@ namespace AltV.Net.Client
         public void OnClientEvent(string name, IntPtr[] args)
         {
             var mValues = MValueConst.CreateFrom(this, args);
-
+            CustomClientEventHandler.GetEvents().ForEachCatching(fn => fn(name, mValues), $"event {nameof(OnClientEvent)}");
+            
             if (!ClientEventBus.ContainsKey(name)) return;
             foreach (var function in ClientEventBus[name])
             {
