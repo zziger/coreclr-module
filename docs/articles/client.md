@@ -4,9 +4,7 @@
 > C# client-side module cannot be used in production yet.<br>
 > The module **is still in development**, and can be released regardless of alt:V updates.<br>
 
-Until the C# client-side module is publicly released in order to use it you need to:
-* Have debug enabled (`debug: true` in altv.cfg)
-* Have sandboxing disabled (`disableRestrictedSandbox: true` in altv.cfg)
+Until the C# client-side module is publicly released, in order to use it, you need to have sandboxing disabled. To achieve this, add `disableRestrictedSandbox: true` to your altv.cfg.
 
 > [!CAUTION]
 > Beware that disabled sandboxing gives server a full access to your personal data.<br>
